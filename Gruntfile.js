@@ -5,45 +5,58 @@
  * Licensed under the MIT license.
  */
 
-'use strict';
+ 'use strict';
 
-module.exports = function(grunt) {
+ module.exports = function(grunt) {
 
 
   // Project configuration.
   grunt.initConfig({
     benchmarks: grunt.file.readJSON('data/benchmarks.json'),
-
-    // Values for repeat helper, see example #5.
-    repeat: {
-      expandright: 50,
-      expandleft: 70,
-      expandup: 80,
-      expanddown: 50,
-      slideleft: 25,
-      slideright: 50,
-      slideup: 25,
-      slidedown: 200,
-      zoomout: 100,
-      zoomin: 25
-    },
-
     assemble: {
-      options: {
+      options: {// global options
+        // Values for repeat helper, see example #5.
+        repeat: {
+          expandright: 3,
+          expandleft: 7,
+          expandup: 8,
+          expanddown: 50,
+          slideleft: 25,
+          slideright: 50,
+          slideup: 25,
+          slidedown: 200,
+          zoomout: 100,
+          zoomin: 25
+        },
+        // This is just present always, idk what it does..
         flatten: true,
+        // Default Configuration for the prettify helper
         prettify: {
           indent: 2,
           condense: true,
           newlines: true
         },
+        // The general folder to place your CSS, JS scripts and Images
         assets: '_demo/assets',
+        // Using JS to modify your own page.
         helpers: 'templates/helpers/*.js',
+        // [Global - ] headers, footers, common partials
         partials: 'templates/includes/*.hbs',
+        // different arrangements of these partials
         layoutdir: 'templates/layouts',
+        // default task-level layout
         layout: 'default.hbs',
       },
+        /* 
       button000: {
+        // INPUT files
         files: {'_demo/button-000/': ['button-000/index.html']},
+        // files: { target : input files}, if no layout given, one page of each input file is assembled onto the target (file or dir)
+        options: {layout: 'none'}, // override task-level layout
+      },
+      // Nope, it doesn't stitch - verify concat using this- 
+      button001: {
+        files: {'_demo/button-001/index.html': ['button-000/index.html','button-000/index2.html']},
         options: {layout: 'none'}, // override task-level layout
       },
       button010: {
@@ -56,33 +69,55 @@ module.exports = function(grunt) {
       button020: {
         files: {'_demo/button-020/': ['button-020/index.hbs']},
         options: {
-          partials: 'button-020/button.hbs',
-          data: 'button-020/*.json'
+          // partials has only one file that picks up the data
+          partials: 'button-020/buttonPartial.hbs',
+          // modifiers using json! (can use any name than modifiers tho)
+          data: 'button-020/*.json' //buttonFile.json
+        // syntax of feeding data {{> buttonPartial buttonFile.expand-right }}
         }
       },
-      button021: {
-        files: {'_demo/button-021/': ['button-021/index.hbs']},
-        options: {
-          partials: 'button-021/button.hbs',
-          data: 'button-021/*.json'
-        }
-      },
-      button030: {
-        files: {'_demo/button-030/': ['button-030/index.hbs']},
-        options: {
-          partials: 'button-030/button.hbs',
-          data: 'button-030/*.json'
-        }
-      },
-      button040: {
+      button021: {//nop- seems same as 20
+      {{> body }} seems a keyword as there's no body.hbs 
+
+        THIS ONE CHOSE COMPONENT.hbs as layout and ADDED JSON DATA FROM WITHIN THE index.hbs
+          ---
+          layout: component.hbs
+          demo:
+            title: "Example 2: Topcoat Buttons + Effeckt.css"
+            component: buttons
+            modifier: effeckt-demo-buttons
+            source:
+              name: Hakim El Hattab
+              url: http://lab.hakim.se/effeckt/
+          ---
+          files: {'_demo/button-021/': ['button-021/index.hbs']},
+          options: {
+            partials: 'button-021/button.hbs',
+            data: 'button-021/*.json'
+          }
+        },
+        
+        button030: {
+        // there's your for-loop! 
+          // {{#repeat '10'}}
+          files: {'_demo/button-030/': ['button-030/index.hbs']},
+          options: {
+            partials: 'button-030/button.hbs',
+            data: 'button-030/*.json'
+          }
+        },
+        button040: {
+        // foreach loop, better! Nope, look next! - can access variables only through partials though
+        //{{#each button}} ... {{> button }} {{/each}}
         files: {'_demo/button-040/': ['button-040/index.hbs']},
         options: {
-          partials: 'button-040/button.hbs',
-          data: 'button-040/*.json',
+          partials: 'button-040/*.html',
+          data: 'button-040/*.json',//demo.json and button.json
           styles: 'button-040/styles.css'
         }
       },
       button041: {
+        // usage of '.' when not using keys, and the titleize helper = {{titleize .}}
         files: {'_demo/button-041/': ['button-041/index.hbs']},
         options: {
           partials: 'button-041/button.hbs',
@@ -100,18 +135,32 @@ module.exports = function(grunt) {
       button060: {
         files: {'_demo/button-060/': ['button-060/index.hbs']},
         options: {
+          repeatOptions: {
+            expandright: 3,
+            expandleft: 70,
+            expandup: 80,
+            expanddown: 50,
+            slideleft: 25,
+            slideright: 50,
+            slideup: 25,
+            slidedown: 200,
+            zoomout: 100,
+            zoomin: 25
+          },
           partials: 'button-060/button.hbs',
           data: 'button-060/*.json'
         }
       },
+      */
       // Pages collection, array format.
       button070: {
         files: {'_demo/button-070/': ['button-070/index.hbs']},
         options: {
           layout: 'component.hbs',
+          // assembles multiple pages, array contains filename,data,content
           pages: '<%= benchmarks.pages.one %>',
           partials: 'button-070/button.hbs',
-          data: ['button-070/button.json', 'benchmarks.json'],
+          data: ['button-070/button.json'],
         }
       },
       // Pages collection, array format.
@@ -124,7 +173,7 @@ module.exports = function(grunt) {
           data: 'button-080/*.json',
         }
       },
-      // Pages collection, object format.
+      // Pages collection, object format. Key is the filename
       button081: {
         files: {'_demo/button-081/': ['button-080/index.hbs']},
         options: {
@@ -146,7 +195,7 @@ module.exports = function(grunt) {
       buttoni18n: {
         files: {'_demo/button-i18n/': ['button-i18n/index-*.hbs']},
         options: {
-            data: 'button-i18n/**/*.json'
+          data: 'button-i18n/**/*.json'
         }
       },
     },
